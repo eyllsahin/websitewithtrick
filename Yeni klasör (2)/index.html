@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: url('https://cdn.dribbble.com/users/973433/screenshots/12021938/media/294124dcb540c2b00043b67b84eb99fc.gif');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text-center {
+            text-align: center;
+            color: white;
+        }
+
+        /* responsiveness added for smaller screens -bar part- */
+        @media (max-width: 768px) {
+            #question {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <title>Ask The Fortune Teller</title>
+</head>
+
+<body>
+    <div class="container text-center">
+        <form>
+            <img src="fortune.jpg" class="img-fluid" alt="fortune teller" onclick="handleImageClick()" style="cursor: pointer;"> <!--pointer to show clickable---->>
+            <h1 class="h3 mb-3 font-weight-normal">Ask the fortune teller</h1>
+            <label class="sr-only" for="question">question</label>
+            <input type="text" id="question" class="form-control"
+                placeholder="Ask and find out what the crystal ball says..." required autofocus
+                oninput="handleInputChange()">
+            <h1 class="h3 mb-3 font-weight-normal" id="answer"></h1>
+        </form>
+    </div>
+
+    <!--  these codes are copied to use Bootstrap Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        let trickActivated = false; // flag to track if the trick is activated
+
+        function handleImageClick() {
+            // activating the trick when clicked
+            trickActivated = true;
+        }
+
+        function fetchYesNo(question) {
+            // if the trick is activated, always answer "Yes" and the yes page displays
+            if (trickActivated) {
+                document.getElementById('answer').innerText = 'Yes';
+            
+                            window.open('yespage.html', '_blank');
+            } else {
+                // when not clicked
+                fetch('https://yesno.wtf/api')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('answer').innerText = data.answer;
+                        // checking the answer and open the new page 
+                        if (data.answer.toLowerCase() === 'yes') {
+                            window.open('yespage.html', '_blank');
+                        } else if (data.answer.toLowerCase() === 'no') {
+                            window.open('nopage.html', '_blank');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+        }
+
+        function handleInputChange() {
+            const questionInput = document.getElementById('question').value.trim();
+
+            // checking if the question ends with a question mark
+            if (questionInput.endsWith('?')) {
+                fetchYesNo(questionInput);
+            } else {
+                // clearing the answer if the question is not valid
+                document.getElementById('answer').innerText = '';
+            }
+        }
+    </script>
+</body>
+
+</html>
